@@ -4,18 +4,19 @@
 @theme {
   --font-sans: "Quicksand", ui-sans-serif, system-ui, sans-serif;
   
-  --color-cinna-blue: #b9e2f5;
-  --color-cinna-dark-blue: #89cff0;
-  --color-cinna-white: #ffffff;
-  --color-cinna-pink: #ffccd5;
-  --color-cinna-text: #4a7c92;
-  --color-cinna-bg: #f0f8ff;
+  --color-purin-yellow: #FEE440;
+  --color-purin-dark-yellow: #FFD700;
+  --color-purin-brown: #5D3A1A;
+  --color-purin-light-brown: #8B4513;
+  --color-purin-cream: #FFF9E3;
+  --color-purin-text: #3E2723;
+  --color-purin-bg: #FFF9E3;
 }
 
 @layer base {
   body {
-    background-color: var(--color-cinna-bg);
-    color: var(--color-cinna-text);
+    background-color: var(--color-purin-bg);
+    color: var(--color-purin-text);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
@@ -23,9 +24,9 @@
 
 @utility kawaii-card {
   background: white;
-  border: 4px solid #d0e9f5;
+  border: 4px solid #FEE440;
   border-radius: 2rem;
-  box-shadow: 0 8px 0 #d0e9f5;
+  box-shadow: 0 8px 0 #FEE440;
   transition: all 0.2s ease;
 }
 
@@ -35,7 +36,7 @@
 }
 
 @utility kawaii-input {
-  @apply rounded-2xl border-4 border-[#d0e9f5] bg-white px-6 py-3 font-bold outline-none focus:border-cinna-blue transition-colors;
+  @apply rounded-2xl border-4 border-[#FEE440] bg-white px-6 py-3 font-bold outline-none focus:border-purin-dark-yellow transition-colors;
 }
 
 @utility kawaii-badge {

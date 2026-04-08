@@ -33,21 +33,21 @@ export function SettingsDialog({ settings, onSave }: SettingsDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="bg-white border-4 border-[#d0e9f5] p-3 sm:p-4 rounded-[1.2rem] sm:rounded-[1.5rem] text-slate-400 hover:text-cinna-blue hover:border-cinna-blue transition-all shadow-[0_4px_0_#d0e9f5] active:translate-y-1 active:shadow-none">
+        <button className="bg-white border-4 border-[#FEE440] p-3 sm:p-4 rounded-[1.2rem] sm:rounded-[1.5rem] text-purin-light-brown hover:text-purin-yellow hover:border-purin-yellow transition-all shadow-[0_4px_0_#FEE440] active:translate-y-1 active:shadow-none">
           <Settings className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-[425px] rounded-[2rem] sm:rounded-[3rem] border-4 sm:border-8 border-[#d0e9f5] bg-cinna-bg p-6 sm:p-10 shadow-2xl">
+      <DialogContent className="w-[95vw] sm:max-w-[425px] rounded-[2rem] sm:rounded-[3rem] border-4 sm:border-8 border-[#FEE440] bg-purin-bg p-6 sm:p-10 shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl sm:text-3xl font-black text-cinna-text tracking-tight">Settings ⚙️</DialogTitle>
-          <DialogDescription className="text-xs sm:text-sm font-bold text-slate-400">
-            Customize your cloud tracker!
+          <DialogTitle className="text-2xl sm:text-3xl font-black text-purin-text tracking-tight">Settings ⚙️</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm font-bold text-purin-light-brown/60">
+            Customize your pudding tracker!
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-6 sm:gap-8 py-6 sm:py-8">
           <div className="grid gap-2 sm:gap-3">
-            <Label htmlFor="name" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400 ml-2 flex items-center gap-2">
-              <User className="w-3 h-3 sm:w-4 sm:h-4 text-cinna-blue" /> Your Name
+            <Label htmlFor="name" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-purin-light-brown/60 ml-2 flex items-center gap-2">
+              <User className="w-3 h-3 sm:w-4 sm:h-4 text-purin-yellow" /> Your Name
             </Label>
             <Input
               id="name"
@@ -58,8 +58,8 @@ export function SettingsDialog({ settings, onSave }: SettingsDialogProps) {
             />
           </div>
           <div className="grid gap-2 sm:gap-3">
-            <Label htmlFor="company" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400 ml-2 flex items-center gap-2">
-              <Building2 className="w-3 h-3 sm:w-4 sm:h-4 text-cinna-dark-blue" /> Institution
+            <Label htmlFor="company" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-purin-light-brown/60 ml-2 flex items-center gap-2">
+              <Building2 className="w-3 h-3 sm:w-4 sm:h-4 text-purin-dark-yellow" /> Institution
             </Label>
             <Input
               id="company"
@@ -70,8 +70,8 @@ export function SettingsDialog({ settings, onSave }: SettingsDialogProps) {
             />
           </div>
           <div className="grid gap-2 sm:gap-3">
-            <Label htmlFor="target" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400 ml-2 flex items-center gap-2">
-              <Target className="w-3 h-3 sm:w-4 sm:h-4 text-cinna-pink" /> Target Hours
+            <Label htmlFor="target" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-purin-light-brown/60 ml-2 flex items-center gap-2">
+              <Target className="w-3 h-3 sm:w-4 sm:h-4 text-purin-brown" /> Target Hours
             </Label>
             <Input
               id="target"
@@ -85,7 +85,7 @@ export function SettingsDialog({ settings, onSave }: SettingsDialogProps) {
         <DialogFooter>
           <button 
             onClick={handleSave} 
-            className="w-full bg-cinna-blue text-white h-16 sm:h-20 rounded-[1.5rem] sm:rounded-[2rem] font-black text-lg sm:text-xl shadow-[0_6px_0_#89cff0] sm:shadow-[0_8px_0_#89cff0] hover:scale-[1.02] active:translate-y-2 active:shadow-none transition-all"
+            className="w-full bg-purin-yellow text-purin-brown h-16 sm:h-20 rounded-[1.5rem] sm:rounded-[2rem] font-black text-lg sm:text-xl shadow-[0_6px_0_#FFD700] sm:shadow-[0_8px_0_#FFD700] hover:scale-[1.02] active:translate-y-2 active:shadow-none transition-all"
           >
             Save Changes! ✨
           </button>

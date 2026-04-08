@@ -73,15 +73,15 @@ export function LogForm({ onAddLog }: LogFormProps) {
     <div className="kawaii-card p-6 sm:p-8 md:p-12 max-w-3xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 sm:mb-10">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-black text-cinna-text tracking-tight text-center sm:text-left">Record Hours 📝</h2>
-          <p className="text-xs sm:text-sm font-bold text-slate-400 mt-1 text-center sm:text-left">What did you learn today?</p>
+          <h2 className="text-2xl sm:text-3xl font-black text-purin-text tracking-tight text-center sm:text-left">Record Hours 📝</h2>
+          <p className="text-xs sm:text-sm font-bold text-purin-light-brown mt-1 text-center sm:text-left">What did you learn today?</p>
         </div>
-        <div className="bg-[#d0e9f5] p-1.5 sm:p-2 rounded-[1.5rem] sm:rounded-[2rem] flex shadow-inner">
+        <div className="bg-[#FEE440]/30 p-1.5 sm:p-2 rounded-[1.5rem] sm:rounded-[2rem] flex shadow-inner">
           <button 
             onClick={() => setMode('single')}
             className={cn(
               "px-4 sm:px-8 py-2 sm:py-3 rounded-[1.2rem] sm:rounded-[1.5rem] text-xs sm:text-sm font-black transition-all",
-              mode === 'single' ? "bg-white text-cinna-dark-blue shadow-[0_3px_0_#d0e9f5]" : "text-slate-400"
+              mode === 'single' ? "bg-white text-purin-brown shadow-[0_3px_0_#FEE440]" : "text-purin-light-brown/50"
             )}
           >
             Single
@@ -90,7 +90,7 @@ export function LogForm({ onAddLog }: LogFormProps) {
             onClick={() => setMode('range')}
             className={cn(
               "px-4 sm:px-8 py-2 sm:py-3 rounded-[1.2rem] sm:rounded-[1.5rem] text-xs sm:text-sm font-black transition-all",
-              mode === 'range' ? "bg-white text-cinna-dark-blue shadow-[0_3px_0_#d0e9f5]" : "text-slate-400"
+              mode === 'range' ? "bg-white text-purin-brown shadow-[0_3px_0_#FEE440]" : "text-purin-light-brown/50"
             )}
           >
             Range
@@ -110,11 +110,11 @@ export function LogForm({ onAddLog }: LogFormProps) {
                   variant="outline"
                   className="w-full justify-start text-left font-black kawaii-input h-14 sm:h-16"
                 >
-                  <CalendarIcon className="mr-3 h-4 w-4 sm:h-5 sm:w-5 text-cinna-blue" />
+                  <CalendarIcon className="mr-3 h-4 w-4 sm:h-5 sm:w-5 text-purin-yellow" />
                   {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 rounded-[2rem] border-4 border-[#d0e9f5] shadow-2xl">
+              <PopoverContent className="w-auto p-0 rounded-[2rem] border-4 border-[#FEE440] shadow-2xl">
                 <Calendar
                   mode="single"
                   selected={startDate}
@@ -134,11 +134,11 @@ export function LogForm({ onAddLog }: LogFormProps) {
                     variant="outline"
                     className="w-full justify-start text-left font-black kawaii-input h-14 sm:h-16"
                   >
-                    <CalendarIcon className="mr-3 h-4 w-4 sm:h-5 sm:w-5 text-cinna-blue" />
+                    <CalendarIcon className="mr-3 h-4 w-4 sm:h-5 sm:w-5 text-purin-yellow" />
                     {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 rounded-[2rem] border-4 border-[#d0e9f5] shadow-2xl">
+                <PopoverContent className="w-auto p-0 rounded-[2rem] border-4 border-[#FEE440] shadow-2xl">
                   <Calendar
                     mode="single"
                     selected={endDate}
@@ -190,7 +190,7 @@ export function LogForm({ onAddLog }: LogFormProps) {
 
         <button 
           type="submit" 
-          className="w-full bg-cinna-blue text-white h-16 sm:h-20 rounded-[1.5rem] sm:rounded-[2rem] font-black text-lg sm:text-xl shadow-[0_6px_0_#89cff0] sm:shadow-[0_8px_0_#89cff0] hover:scale-[1.02] active:translate-y-2 active:shadow-none transition-all"
+          className="w-full bg-purin-yellow text-purin-brown h-16 sm:h-20 rounded-[1.5rem] sm:rounded-[2rem] font-black text-lg sm:text-xl shadow-[0_6px_0_#FFD700] sm:shadow-[0_8px_0_#FFD700] hover:scale-[1.02] active:translate-y-2 active:shadow-none transition-all"
         >
           {mode === 'single' ? 'Save Entry! ✨' : 'Save Batch! 🌟'}
         </button>

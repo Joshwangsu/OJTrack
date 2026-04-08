@@ -153,11 +153,11 @@ export default function App() {
 
   if (!isAuthReady || (user && !isLoaded)) {
     return (
-      <div className="min-h-screen bg-cinna-bg flex items-center justify-center">
+      <div className="min-h-screen bg-purin-bg flex items-center justify-center">
         <motion.div 
           animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="text-cinna-blue"
+          className="text-purin-yellow"
         >
           <Cloud className="w-20 h-20" />
         </motion.div>
@@ -167,22 +167,22 @@ export default function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-cinna-bg flex items-center justify-center p-6">
+      <div className="min-h-screen bg-purin-bg flex items-center justify-center p-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="kawaii-card p-12 max-w-md w-full text-center space-y-8"
         >
-          <div className="w-24 h-24 bg-cinna-blue rounded-[2.5rem] flex items-center justify-center shadow-[0_10px_0_#89cff0] mx-auto rotate-3">
-            <GraduationCap className="text-white w-12 h-12" />
+          <div className="w-24 h-24 bg-purin-yellow rounded-[2.5rem] flex items-center justify-center shadow-[0_10px_0_#FFD700] mx-auto rotate-3">
+            <GraduationCap className="text-purin-brown w-12 h-12" />
           </div>
           <div className="space-y-2">
-            <h1 className="text-4xl font-black text-cinna-text">Welcome! ☁️</h1>
-            <p className="text-slate-400 font-bold">Log your OJT journey on the clouds.</p>
+            <h1 className="text-4xl font-black text-purin-text">Welcome! 🍮</h1>
+            <p className="text-purin-light-brown font-bold">Log your OJT journey with Pompompurin.</p>
           </div>
           <button 
             onClick={signInWithGoogle}
-            className="w-full bg-cinna-blue text-white h-16 rounded-[1.5rem] font-black text-lg shadow-[0_6px_0_#89cff0] hover:scale-[1.02] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-3"
+            className="w-full bg-purin-yellow text-purin-brown h-16 rounded-[1.5rem] font-black text-lg shadow-[0_6px_0_#FFD700] hover:scale-[1.02] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-3"
           >
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" className="w-6 h-6 bg-white p-1 rounded-full" alt="Google" />
             Login with Google
@@ -193,16 +193,16 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-cinna-bg text-cinna-text font-sans selection:bg-cinna-blue selection:text-white pb-20">
+    <div className="min-h-screen bg-purin-bg text-purin-text font-sans selection:bg-purin-yellow selection:text-purin-brown pb-20">
       <header className="pt-8 pb-4 sm:pt-12 sm:pb-8">
         <div className="container mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-cinna-blue rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center shadow-[0_6px_0_#89cff0] sm:shadow-[0_8px_0_#89cff0] rotate-3">
-              <GraduationCap className="text-white w-8 h-8 sm:w-10 sm:h-10" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-purin-yellow rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center shadow-[0_6px_0_#FFD700] sm:shadow-[0_8px_0_#FFD700] rotate-3">
+              <GraduationCap className="text-purin-brown w-8 h-8 sm:w-10 sm:h-10" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-cinna-text leading-none">OJT Tracker ☁️</h1>
-              <p className="text-[10px] sm:text-sm text-slate-400 mt-2 uppercase tracking-[0.15em] sm:tracking-[0.2em] font-black">
+              <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-purin-text leading-none">OJT Tracker 🍮</h1>
+              <p className="text-[10px] sm:text-sm text-purin-light-brown mt-2 uppercase tracking-[0.15em] sm:tracking-[0.2em] font-black">
                 {settings.userName || user.displayName} • {settings.companyName || 'Institution'}
               </p>
             </div>
@@ -211,7 +211,7 @@ export default function App() {
             <SettingsDialog settings={settings} onSave={handleSaveSettings} />
             <button 
               onClick={logout}
-              className="bg-white border-4 border-[#d0e9f5] p-3 sm:p-4 rounded-[1.2rem] sm:rounded-[1.5rem] text-slate-400 hover:text-red-400 hover:border-red-400 transition-all shadow-[0_4px_0_#d0e9f5] active:translate-y-1 active:shadow-none"
+              className="bg-white border-4 border-[#FEE440] p-3 sm:p-4 rounded-[1.2rem] sm:rounded-[1.5rem] text-purin-light-brown hover:text-red-400 hover:border-red-400 transition-all shadow-[0_4px_0_#FEE440] active:translate-y-1 active:shadow-none"
             >
               <LogOut className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
@@ -222,27 +222,27 @@ export default function App() {
       <main className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-6xl">
         <Tabs defaultValue="dashboard" className="space-y-8 sm:space-y-12">
           <div className="flex justify-center">
-            <TabsList className="bg-[#d0e9f5] p-1.5 sm:p-2 h-14 sm:h-20 rounded-[1.5rem] sm:rounded-[2.5rem] w-full max-w-lg shadow-[0_4px_0_#b9e2f5] sm:shadow-[0_6px_0_#b9e2f5]">
+            <TabsList className="bg-[#FEE440]/30 p-1.5 sm:p-2 h-14 sm:h-20 rounded-[1.5rem] sm:rounded-[2.5rem] w-full max-w-lg shadow-[0_4px_0_#FEE440]/50 sm:shadow-[0_6px_0_#FEE440]/50">
               <TabsTrigger 
                 value="dashboard" 
-                className="rounded-[1.2rem] sm:rounded-[2rem] px-3 sm:px-8 gap-1.5 sm:gap-2 data-[state=active]:bg-white data-[state=active]:text-cinna-dark-blue data-[state=active]:shadow-[0_3px_0_#d0e9f5] sm:data-[state=active]:shadow-[0_4px_0_#d0e9f5] font-black text-xs sm:text-base transition-all h-full flex-1 sm:flex-none"
+                className="rounded-[1.2rem] sm:rounded-[2rem] px-3 sm:px-8 gap-1.5 sm:gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] sm:data-[state=active]:shadow-[0_4px_0_#FFD700] font-black text-xs sm:text-base transition-all h-full flex-1 sm:flex-none"
               >
                 <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden xs:inline">Dashboard</span>
+                <span className="hidden sm:inline">Dashboard</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="logs" 
-                className="rounded-[1.2rem] sm:rounded-[2rem] px-3 sm:px-8 gap-1.5 sm:gap-2 data-[state=active]:bg-white data-[state=active]:text-cinna-dark-blue data-[state=active]:shadow-[0_3px_0_#d0e9f5] sm:data-[state=active]:shadow-[0_4px_0_#d0e9f5] font-black text-xs sm:text-base transition-all h-full flex-1 sm:flex-none"
+                className="rounded-[1.2rem] sm:rounded-[2rem] px-3 sm:px-8 gap-1.5 sm:gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] sm:data-[state=active]:shadow-[0_4px_0_#FFD700] font-black text-xs sm:text-base transition-all h-full flex-1 sm:flex-none"
               >
                 <History className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden xs:inline">History</span>
+                <span className="hidden sm:inline">History</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="add" 
-                className="rounded-[1.2rem] sm:rounded-[2rem] px-3 sm:px-8 gap-1.5 sm:gap-2 data-[state=active]:bg-white data-[state=active]:text-cinna-dark-blue data-[state=active]:shadow-[0_3px_0_#d0e9f5] sm:data-[state=active]:shadow-[0_4px_0_#d0e9f5] font-black text-xs sm:text-base transition-all h-full flex-1 sm:flex-none"
+                className="rounded-[1.2rem] sm:rounded-[2rem] px-3 sm:px-8 gap-1.5 sm:gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] sm:data-[state=active]:shadow-[0_4px_0_#FFD700] font-black text-xs sm:text-base transition-all h-full flex-1 sm:flex-none"
               >
                 <PlusCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden xs:inline">Record</span>
+                <span className="hidden sm:inline">Record</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -285,8 +285,8 @@ export default function App() {
       </main>
 
       <footer className="mt-12 sm:mt-20 text-center">
-        <p className="text-[10px] sm:text-xs text-slate-300 uppercase tracking-[0.3em] sm:tracking-[0.5em] font-black">
-          Floating on Clouds ☁️ • {new Date().getFullYear()}
+        <p className="text-[10px] sm:text-xs text-purin-light-brown/30 uppercase tracking-[0.3em] sm:tracking-[0.5em] font-black">
+          Collecting Puddings 🍮 • {new Date().getFullYear()}
         </p>
       </footer>
       
