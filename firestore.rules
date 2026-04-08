@@ -1,0 +1,98 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: /users/{userId}/logs
+    // Document ID: {logId}
+    // Fields:
+    //   - id: string
+    //   - userId: string (required, owner)
+    //   - date: string (ISO8601)
+    //   - endDate: string (optional, ISO8601)
+    //   - startTime: string
+    //   - endTime: string
+    //   - duration: number
+    //   - totalDuration: number
+    //   - task: string (optional)
+    //   - category: string
+    //   - status: string (enum: completed, pending)
+    //   - createdAt: string (ISO8601)
+    //
+    // Collection: /users/{userId}/settings
+    // Document ID: current
+    // Fields:
+    //   - userId: string (required, owner)
+    //   - userName: string
+    //   - companyName: string
+    //   - targetHours: number
+    //   - updatedAt: string (ISO8601)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidDateString(dateStr) {
+      return dateStr is string && dateStr.matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*Z?$");
+    }
+
+    // ===============================================================
+    // Validation Functions
+    // ===============================================================
+
+    function isValidLog(data) {
+      return data.userId == request.auth.uid &&
+             data.date is string && isValidDateString(data.date) &&
+             data.startTime is string &&
+             data.endTime is string &&
+             data.duration is number &&
+             data.totalDuration is number &&
+             data.status in ['completed', 'pending'] &&
+             (!('task' in data) || (data.task is string && data.task.size() < 1000)) &&
+             (!('endDate' in data) || isValidDateString(data.endDate));
+    }
+
+    function isValidSettings(data) {
+      return data.userId == request.auth.uid &&
+             data.userName is string && data.userName.size() > 0 && data.userName.size() < 100 &&
+             data.companyName is string && data.companyName.size() > 0 && data.companyName.size() < 100 &&
+             data.targetHours is number && data.targetHours >= 0;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      
+      match /logs/{logId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidLog(request.resource.data);
+        allow update: if isOwner(userId) && isValidLog(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      match /settings/{docId} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId) && isValidSettings(request.resource.data);
+      }
+    }
+  }
+}

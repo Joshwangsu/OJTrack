@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "Log": {
+      "title": "Log",
+      "description": "A single OJT hour log entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "endDate": { "type": "string", "format": "date-time" },
+        "startTime": { "type": "string" },
+        "endTime": { "type": "string" },
+        "duration": { "type": "number" },
+        "totalDuration": { "type": "number" },
+        "task": { "type": "string" },
+        "category": { "type": "string" },
+        "status": { "type": "string", "enum": ["completed", "pending"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "date", "startTime", "endTime", "duration", "totalDuration", "status"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "User profile and tracking settings",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "companyName": { "type": "string" },
+        "targetHours": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "userName", "companyName", "targetHours"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/logs/{logId}": {
+      "schema": "Log",
+      "description": "User's OJT logs"
+    },
+    "/users/{userId}/settings/current": {
+      "schema": "Settings",
+      "description": "User's application settings"
+    }
+  }
+}
