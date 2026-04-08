@@ -194,59 +194,92 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-purin-bg text-purin-text font-sans selection:bg-purin-yellow selection:text-purin-brown pb-20">
-      <header className="pt-8 pb-4 sm:pt-12 sm:pb-8">
-        <div className="container mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 text-center sm:text-left">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-purin-yellow rounded-[1.5rem] sm:rounded-[2rem] flex items-center justify-center shadow-[0_6px_0_#FFD700] sm:shadow-[0_8px_0_#FFD700] rotate-3">
-              <GraduationCap className="text-purin-brown w-8 h-8 sm:w-10 sm:h-10" />
-            </div>
-            <div>
-              <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-purin-text leading-none">OJT Tracker 🍮</h1>
-              <p className="text-[10px] sm:text-sm text-purin-light-brown mt-2 uppercase tracking-[0.15em] sm:tracking-[0.2em] font-black">
-                {settings.userName || user.displayName} • {settings.companyName || 'Institution'}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <SettingsDialog settings={settings} onSave={handleSaveSettings} />
-            <button 
-              onClick={logout}
-              className="bg-white border-4 border-[#FEE440] p-3 sm:p-4 rounded-[1.2rem] sm:rounded-[1.5rem] text-purin-light-brown hover:text-red-400 hover:border-red-400 transition-all shadow-[0_4px_0_#FEE440] active:translate-y-1 active:shadow-none"
-            >
-              <LogOut className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
-          </div>
-        </div>
-      </header>
+      <Tabs defaultValue="dashboard" className="w-full">
+        <header className="pt-6 pb-4 sm:pt-10 sm:pb-6">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="flex items-start lg:items-center justify-between gap-4">
+              {/* Title Section */}
+              <div className="flex items-center gap-3 sm:gap-6">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-purin-yellow rounded-[1rem] sm:rounded-[1.5rem] flex items-center justify-center shadow-[0_4px_0_#FFD700] sm:shadow-[0_6px_0_#FFD700] rotate-3 shrink-0">
+                  <GraduationCap className="text-purin-brown w-6 h-6 sm:w-8 sm:h-8" />
+                </div>
+                <div>
+                  <h1 className="text-xl sm:text-3xl font-black tracking-tight text-purin-text leading-none">OJT Tracker 🍮</h1>
+                  <p className="hidden sm:block text-[10px] sm:text-xs text-purin-light-brown mt-1 uppercase tracking-[0.15em] font-black">
+                    {settings.userName || user.displayName} • {settings.companyName || 'Institution'}
+                  </p>
+                </div>
+              </div>
 
-      <main className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-6xl">
-        <Tabs defaultValue="dashboard" className="space-y-8 sm:space-y-12">
-          <div className="flex justify-center">
-            <TabsList className="bg-[#FEE440]/30 p-1.5 sm:p-2 h-14 sm:h-20 rounded-[1.5rem] sm:rounded-[2.5rem] w-full max-w-lg shadow-[0_4px_0_#FEE440]/50 sm:shadow-[0_6px_0_#FEE440]/50">
-              <TabsTrigger 
-                value="dashboard" 
-                className="rounded-[1.2rem] sm:rounded-[2rem] px-3 sm:px-8 gap-1.5 sm:gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] sm:data-[state=active]:shadow-[0_4px_0_#FFD700] font-black text-xs sm:text-base transition-all h-full flex-1 sm:flex-none"
-              >
-                <LayoutDashboard className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline">Dashboard</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="logs" 
-                className="rounded-[1.2rem] sm:rounded-[2rem] px-3 sm:px-8 gap-1.5 sm:gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] sm:data-[state=active]:shadow-[0_4px_0_#FFD700] font-black text-xs sm:text-base transition-all h-full flex-1 sm:flex-none"
-              >
-                <History className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline">History</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="add" 
-                className="rounded-[1.2rem] sm:rounded-[2rem] px-3 sm:px-8 gap-1.5 sm:gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] sm:data-[state=active]:shadow-[0_4px_0_#FFD700] font-black text-xs sm:text-base transition-all h-full flex-1 sm:flex-none"
-              >
-                <PlusCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="hidden sm:inline">Record</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
+              {/* Desktop Navbar */}
+              <div className="hidden lg:flex flex-1 justify-center px-4">
+                <TabsList className="bg-[#FEE440]/30 p-1.5 h-16 rounded-[2rem] w-full max-w-md shadow-[0_4px_0_#FEE440]/50">
+                  <TabsTrigger 
+                    value="dashboard" 
+                    className="rounded-[1.5rem] px-6 gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-sm transition-all h-full flex-1"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span>Dashboard</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="logs" 
+                    className="rounded-[1.5rem] px-6 gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-sm transition-all h-full flex-1"
+                  >
+                    <History className="w-4 h-4" />
+                    <span>History</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="add" 
+                    className="rounded-[1.5rem] px-6 gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-sm transition-all h-full flex-1"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    <span>Record</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
+              {/* Buttons Section */}
+              <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+                <SettingsDialog settings={settings} onSave={handleSaveSettings} />
+                <button 
+                  onClick={logout}
+                  className="bg-white border-4 border-[#FEE440] p-2.5 sm:p-3.5 rounded-[1rem] sm:rounded-[1.2rem] text-purin-light-brown hover:text-red-400 hover:border-red-400 transition-all shadow-[0_4px_0_#FEE440] active:translate-y-1 active:shadow-none"
+                >
+                  <LogOut className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile Navbar */}
+            <div className="lg:hidden mt-6 flex justify-center">
+              <TabsList className="bg-[#FEE440]/30 p-1.5 h-14 sm:h-16 rounded-[1.5rem] w-full max-w-sm shadow-[0_4px_0_#FEE440]/50">
+                <TabsTrigger 
+                  value="dashboard" 
+                  className="rounded-[1.2rem] px-3 gap-1.5 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-xs transition-all h-full flex-1"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span className="hidden sm:inline">Dashboard</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="logs" 
+                  className="rounded-[1.2rem] px-3 gap-1.5 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-xs transition-all h-full flex-1"
+                >
+                  <History className="w-4 h-4" />
+                  <span className="hidden sm:inline">History</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="add" 
+                  className="rounded-[1.2rem] px-3 gap-1.5 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-xs transition-all h-full flex-1"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span className="hidden sm:inline">Record</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-6xl">
           <AnimatePresence mode="wait">
             <TabsContent value="dashboard" className="mt-0 outline-none">
               <motion.div
@@ -281,8 +314,8 @@ export default function App() {
               </motion.div>
             </TabsContent>
           </AnimatePresence>
-        </Tabs>
-      </main>
+        </main>
+      </Tabs>
 
       <footer className="mt-12 sm:mt-20 text-center">
         <p className="text-[10px] sm:text-xs text-purin-light-brown/30 uppercase tracking-[0.3em] sm:tracking-[0.5em] font-black">
