@@ -32,10 +32,8 @@ export function SettingsDialog({ settings, onSave }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button className="bg-white border-4 border-[#FEE440] p-3 sm:p-4 rounded-[1.2rem] sm:rounded-[1.5rem] text-purin-light-brown hover:text-purin-yellow hover:border-purin-yellow transition-all shadow-[0_4px_0_#FEE440] active:translate-y-1 active:shadow-none">
-          <Settings className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
+      <DialogTrigger className="bg-white border-4 border-[#FEE440] p-3 sm:p-4 rounded-[1.2rem] sm:rounded-[1.5rem] text-purin-light-brown hover:text-purin-yellow hover:border-purin-yellow transition-all shadow-[0_4px_0_#FEE440] active:translate-y-1 active:shadow-none">
+        <Settings className="w-5 h-5 sm:w-6 sm:h-6" />
       </DialogTrigger>
       <DialogContent className="w-[95vw] sm:max-w-[425px] rounded-[2rem] sm:rounded-[3rem] border-4 sm:border-8 border-[#FEE440] bg-purin-bg p-6 sm:p-10 shadow-2xl">
         <DialogHeader>

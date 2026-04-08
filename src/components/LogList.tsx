@@ -1,18 +1,20 @@
 import { format } from 'date-fns';
-import { Trash2, FileSpreadsheet, Briefcase, Clock } from 'lucide-react';
+import { Trash2, FileSpreadsheet, Briefcase, Clock, Edit2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { LogEntry } from '@/src/types';
 import { motion, AnimatePresence } from 'motion/react';
+import { EditLogDialog } from './EditLogDialog';
 
 interface LogListProps {
   logs: LogEntry[];
   onDeleteLog: (id: string) => void;
+  onUpdateLog: (id: string, entry: Partial<LogEntry>) => Promise<void>;
   onExport: () => void;
 }
 
-export function LogList({ logs, onDeleteLog, onExport }: LogListProps) {
+export function LogList({ logs, onDeleteLog, onUpdateLog, onExport }: LogListProps) {
   const sortedLogs = [...logs].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
@@ -87,12 +89,15 @@ export function LogList({ logs, onDeleteLog, onExport }: LogListProps) {
                       </div>
                     )}
                   </div>
-                  <button
-                    onClick={() => onDeleteLog(log.id)}
-                    className="bg-red-50 text-red-300 hover:text-red-500 hover:bg-red-100 p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all active:scale-90"
-                  >
-                    <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <EditLogDialog log={log} onUpdateLog={onUpdateLog} />
+                    <button
+                      onClick={() => onDeleteLog(log.id)}
+                      className="bg-red-50 text-red-300 hover:text-red-500 hover:bg-red-100 p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all active:scale-90"
+                    >
+                      <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))

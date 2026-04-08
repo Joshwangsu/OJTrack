@@ -3,10 +3,11 @@ import { Toaster } from '@/components/ui/sonner';
 import { Dashboard } from './components/Dashboard';
 import { LogForm } from './components/LogForm';
 import { LogList } from './components/LogList';
+import { WeeklyJournal } from './components/WeeklyJournal';
 import { SettingsDialog } from './components/SettingsDialog';
-import { LogEntry, UserSettings } from './types';
+import { LogEntry, UserSettings, WeeklyJournal as WeeklyJournalType } from './types';
 import { motion, AnimatePresence } from 'motion/react';
-import { LayoutDashboard, History, PlusCircle, GraduationCap, LogOut, Cloud } from 'lucide-react';
+import { LayoutDashboard, History, PlusCircle, GraduationCap, LogOut, Cloud, BookOpen } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { auth, db, signInWithGoogle, logout, handleFirestoreError, OperationType } from './lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -18,7 +19,8 @@ import {
   setDoc, 
   deleteDoc, 
   orderBy,
-  addDoc
+  addDoc,
+  updateDoc
 } from 'firebase/firestore';
 import { toast } from 'sonner';
 
@@ -32,6 +34,7 @@ export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [journals, setJournals] = useState<WeeklyJournalType[]>([]);
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -42,6 +45,7 @@ export default function App() {
       setIsAuthReady(true);
       if (!currentUser) {
         setLogs([]);
+        setJournals([]);
         setSettings(DEFAULT_SETTINGS);
         setIsLoaded(true);
       }
@@ -77,13 +81,25 @@ export default function App() {
       setLogs(logsData);
     }, (err) => handleFirestoreError(err, OperationType.LIST, `users/${user.uid}/logs`));
 
+    // Sync Journals
+    const journalsRef = collection(db, 'users', user.uid, 'journals');
+    const qJournals = query(journalsRef, orderBy('weekStartDate', 'desc'));
+    const unsubJournals = onSnapshot(qJournals, (snapshot) => {
+      const journalsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as WeeklyJournalType[];
+      setJournals(journalsData);
+    }, (err) => handleFirestoreError(err, OperationType.LIST, `users/${user.uid}/journals`));
+
     return () => {
       unsubSettings();
       unsubLogs();
+      unsubJournals();
     };
   }, [user, isAuthReady]);
 
-  const handleAddLog = async (entry: Omit<LogEntry, 'id'>) => {
+  const handleAddLog = async (entry: Omit<LogEntry, 'id'>): Promise<void> => {
     if (!user) return;
     try {
       const logsRef = collection(db, 'users', user.uid, 'logs');
@@ -94,6 +110,19 @@ export default function App() {
       });
     } catch (err) {
       handleFirestoreError(err, OperationType.CREATE, `users/${user.uid}/logs`);
+    }
+  };
+
+  const handleUpdateLog = async (id: string, updates: Partial<LogEntry>) => {
+    if (!user) return;
+    try {
+      const logRef = doc(db, 'users', user.uid, 'logs', id);
+      await updateDoc(logRef, {
+        ...updates,
+        updatedAt: new Date().toISOString()
+      });
+    } catch (err) {
+      handleFirestoreError(err, OperationType.UPDATE, `users/${user.uid}/logs/${id}`);
     }
   };
 
@@ -116,6 +145,31 @@ export default function App() {
       toast.success('Settings updated! ✨');
     } catch (err) {
       handleFirestoreError(err, OperationType.WRITE, `users/${user.uid}/settings/current`);
+    }
+  };
+
+  const handleAddJournal = async (journal: Omit<WeeklyJournalType, 'id'>) => {
+    if (!user) return;
+    try {
+      const journalsRef = collection(db, 'users', user.uid, 'journals');
+      await addDoc(journalsRef, {
+        ...journal,
+        userId: user.uid
+      });
+      toast.success('Journal reflection saved! 🍮');
+    } catch (err) {
+      handleFirestoreError(err, OperationType.CREATE, `users/${user.uid}/journals`);
+    }
+  };
+
+  const handleUpdateJournal = async (id: string, updates: Partial<WeeklyJournalType>) => {
+    if (!user) return;
+    try {
+      const journalRef = doc(db, 'users', user.uid, 'journals', id);
+      await updateDoc(journalRef, updates);
+      toast.success('Journal reflection updated! ✨');
+    } catch (err) {
+      handleFirestoreError(err, OperationType.UPDATE, `users/${user.uid}/journals/${id}`);
     }
   };
 
@@ -213,8 +267,9 @@ export default function App() {
 
               {/* Desktop Navbar */}
               <div className="hidden lg:flex flex-1 justify-center px-4">
-                <TabsList className="bg-[#FEE440]/30 p-1.5 h-16 rounded-[2rem] w-full max-w-md shadow-[0_4px_0_#FEE440]/50">
+                <TabsList className="bg-[#FEE440]/30 p-1.5 h-16 rounded-[2rem] w-full max-w-2xl shadow-[0_4px_0_#FEE440]/50">
                   <TabsTrigger 
+                    key="desktop-dashboard"
                     value="dashboard" 
                     className="rounded-[1.5rem] px-6 gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-sm transition-all h-full flex-1"
                   >
@@ -222,6 +277,7 @@ export default function App() {
                     <span>Dashboard</span>
                   </TabsTrigger>
                   <TabsTrigger 
+                    key="desktop-logs"
                     value="logs" 
                     className="rounded-[1.5rem] px-6 gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-sm transition-all h-full flex-1"
                   >
@@ -229,6 +285,15 @@ export default function App() {
                     <span>History</span>
                   </TabsTrigger>
                   <TabsTrigger 
+                    key="desktop-journal"
+                    value="journal" 
+                    className="rounded-[1.5rem] px-6 gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-sm transition-all h-full flex-1"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    <span>Weekly Journal</span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    key="desktop-add"
                     value="add" 
                     className="rounded-[1.5rem] px-6 gap-2 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-sm transition-all h-full flex-1"
                   >
@@ -252,8 +317,9 @@ export default function App() {
 
             {/* Mobile Navbar */}
             <div className="lg:hidden mt-6 flex justify-center">
-              <TabsList className="bg-[#FEE440]/30 p-1.5 h-14 sm:h-16 rounded-[1.5rem] w-full max-w-sm shadow-[0_4px_0_#FEE440]/50">
+              <TabsList className="bg-[#FEE440]/30 p-1.5 h-14 sm:h-16 rounded-[1.5rem] w-full max-w-xl shadow-[0_4px_0_#FEE440]/50">
                 <TabsTrigger 
+                  key="mobile-dashboard"
                   value="dashboard" 
                   className="rounded-[1.2rem] px-3 gap-1.5 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-xs transition-all h-full flex-1"
                 >
@@ -261,6 +327,7 @@ export default function App() {
                   <span className="hidden sm:inline">Dashboard</span>
                 </TabsTrigger>
                 <TabsTrigger 
+                  key="mobile-logs"
                   value="logs" 
                   className="rounded-[1.2rem] px-3 gap-1.5 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-xs transition-all h-full flex-1"
                 >
@@ -268,6 +335,15 @@ export default function App() {
                   <span className="hidden sm:inline">History</span>
                 </TabsTrigger>
                 <TabsTrigger 
+                  key="mobile-journal"
+                  value="journal" 
+                  className="rounded-[1.2rem] px-3 gap-1.5 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-xs transition-all h-full flex-1"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span className="hidden sm:inline">Journal</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  key="mobile-add"
                   value="add" 
                   className="rounded-[1.2rem] px-3 gap-1.5 data-[state=active]:bg-purin-yellow data-[state=active]:text-purin-brown data-[state=active]:shadow-[0_3px_0_#FFD700] font-black text-xs transition-all h-full flex-1"
                 >
@@ -299,7 +375,22 @@ export default function App() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4, type: "spring", bounce: 0.4 }}
               >
-                <LogList logs={logs} onDeleteLog={handleDeleteLog} onExport={handleExportCSV} />
+                <LogList logs={logs} onDeleteLog={handleDeleteLog} onUpdateLog={handleUpdateLog} onExport={handleExportCSV} />
+              </motion.div>
+            </TabsContent>
+
+            <TabsContent value="journal" className="mt-0 outline-none">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4, type: "spring", bounce: 0.4 }}
+              >
+                <WeeklyJournal 
+                  journals={journals} 
+                  onSaveJournal={handleAddJournal} 
+                  onUpdateJournal={handleUpdateJournal} 
+                />
               </motion.div>
             </TabsContent>
 

@@ -30,6 +30,16 @@ service cloud.firestore {
     //   - targetHours: number
     //   - updatedAt: string (ISO8601)
     //
+    // Collection: /users/{userId}/journals
+    // Document ID: {journalId}
+    // Fields:
+    //   - userId: string (required, owner)
+    //   - weekStartDate: string (ISO8601)
+    //   - weekEndDate: string (ISO8601)
+    //   - reflection: string
+    //   - createdAt: string (ISO8601)
+    //   - updatedAt: string (ISO8601)
+    //
     // ===============================================================
 
     // ===============================================================
@@ -75,6 +85,14 @@ service cloud.firestore {
              data.targetHours is number && data.targetHours >= 0;
     }
 
+    function isValidJournal(data) {
+      return data.userId == request.auth.uid &&
+             data.weekStartDate is string && isValidDateString(data.weekStartDate) &&
+             data.weekEndDate is string && isValidDateString(data.weekEndDate) &&
+             data.reflection is string && data.reflection.size() < 5000 &&
+             data.createdAt is string && isValidDateString(data.createdAt);
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -92,6 +110,13 @@ service cloud.firestore {
       match /settings/{docId} {
         allow read: if isOwner(userId);
         allow write: if isOwner(userId) && isValidSettings(request.resource.data);
+      }
+
+      match /journals/{journalId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidJournal(request.resource.data);
+        allow update: if isOwner(userId) && isValidJournal(request.resource.data);
+        allow delete: if isOwner(userId);
       }
     }
   }

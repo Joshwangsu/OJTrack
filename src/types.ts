@@ -16,3 +16,12 @@ export interface UserSettings {
   userName: string;
   companyName: string;
 }
+
+export interface WeeklyJournal {
+  id: string;
+  weekStartDate: string; // ISO string
+  weekEndDate: string; // ISO string
+  reflection: string;
+  createdAt: string; // ISO string
+  updatedAt: string; // ISO string
+}

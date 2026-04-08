@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { format, parse, differenceInDays } from 'date-fns';
+import { format, parse, differenceInCalendarDays } from 'date-fns';
 import { Calendar as CalendarIcon, Plus, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,59 +14,74 @@ import { toast } from 'sonner';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface LogFormProps {
-  onAddLog: (entry: Omit<LogEntry, 'id'>) => void;
+  onAddLog: (entry: Omit<LogEntry, 'id'>) => Promise<void>;
 }
 
 export function LogForm({ onAddLog }: LogFormProps) {
   const [mode, setMode] = useState<'single' | 'range'>('single');
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date>(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
+  const [endDate, setEndDate] = useState<Date>(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
   const [startTime, setStartTime] = useState('08:00');
   const [endTime, setEndTime] = useState('17:00');
   const [task, setTask] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const start = parse(startTime, 'HH:mm', new Date());
-    const end = parse(endTime, 'HH:mm', new Date());
-    
-    let dailyDuration = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
-    if (dailyDuration < 0) dailyDuration += 24;
-
-    if (mode === 'single') {
-      onAddLog({
-        date: startDate.toISOString(),
-        startTime,
-        endTime,
-        duration: dailyDuration,
-        totalDuration: dailyDuration,
-        task: task || undefined,
-        category: 'General',
-        status: 'completed',
-      });
-    } else {
-      const days = differenceInDays(endDate, startDate) + 1;
-      if (days <= 0) {
-        toast.error('End date must be after start date');
-        return;
-      }
+    try {
+      const start = parse(startTime, 'HH:mm', new Date());
+      const end = parse(endTime, 'HH:mm', new Date());
       
-      onAddLog({
-        date: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+      let dailyDuration = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+      if (dailyDuration < 0) dailyDuration += 24;
+
+      const logData: any = {
         startTime,
         endTime,
         duration: dailyDuration,
-        totalDuration: dailyDuration * days,
-        task: task || undefined,
         category: 'General',
-        status: 'completed',
-      });
-    }
+        status: 'completed' as const,
+      };
 
-    setTask('');
-    toast.success(mode === 'single' ? 'Log entry added! ✨' : 'Batch entries added! 🌟');
+      if (task.trim()) {
+        logData.task = task.trim();
+      }
+
+      if (mode === 'single') {
+        await onAddLog({
+          ...logData,
+          date: startDate.toISOString(),
+          totalDuration: dailyDuration,
+        });
+      } else {
+        const days = differenceInCalendarDays(endDate, startDate) + 1;
+        if (days <= 0) {
+          toast.error('End date must be after start date! 🍮');
+          return;
+        }
+        
+        await onAddLog({
+          ...logData,
+          date: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+          totalDuration: dailyDuration * days,
+        });
+      }
+
+      setTask('');
+      toast.success(mode === 'single' ? 'Log entry added! ✨' : 'Batch entries added! 🌟');
+    } catch (error) {
+      console.error('Error adding log:', error);
+      toast.error('Failed to add log entry. Please try again. 🍮');
+    }
   };
 
   return (
@@ -78,6 +93,7 @@ export function LogForm({ onAddLog }: LogFormProps) {
         </div>
         <div className="bg-[#FEE440]/30 p-1.5 sm:p-2 rounded-[1.5rem] sm:rounded-[2rem] flex shadow-inner">
           <button 
+            type="button"
             onClick={() => setMode('single')}
             className={cn(
               "px-4 sm:px-8 py-2 sm:py-3 rounded-[1.2rem] sm:rounded-[1.5rem] text-xs sm:text-sm font-black transition-all",
@@ -87,6 +103,7 @@ export function LogForm({ onAddLog }: LogFormProps) {
             Single
           </button>
           <button 
+            type="button"
             onClick={() => setMode('range')}
             className={cn(
               "px-4 sm:px-8 py-2 sm:py-3 rounded-[1.2rem] sm:rounded-[1.5rem] text-xs sm:text-sm font-black transition-all",
@@ -101,19 +118,22 @@ export function LogForm({ onAddLog }: LogFormProps) {
       <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
           <div className="space-y-3 sm:space-y-4">
-            <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-slate-400 ml-2">
+            <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-purin-light-brown/60 ml-2">
               {mode === 'single' ? 'Date' : 'Start Date'}
             </Label>
             <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-left font-black kawaii-input h-14 sm:h-16"
-                >
-                  <CalendarIcon className="mr-3 h-4 w-4 sm:h-5 sm:w-5 text-purin-yellow" />
-                  {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
+              <PopoverTrigger
+                render={(props) => (
+                  <Button
+                    {...props}
+                    variant="outline"
+                    className="w-full justify-start text-left font-black kawaii-input h-14 sm:h-16"
+                  >
+                    <CalendarIcon className="mr-3 h-4 w-4 sm:h-5 sm:w-5 text-purin-yellow" />
+                    {startDate ? format(startDate, "PPP") : <span>Pick a date</span>}
+                  </Button>
+                )}
+              />
               <PopoverContent className="w-auto p-0 rounded-[2rem] border-4 border-[#FEE440] shadow-2xl">
                 <Calendar
                   mode="single"
@@ -127,17 +147,20 @@ export function LogForm({ onAddLog }: LogFormProps) {
 
           {mode === 'range' && (
             <div className="space-y-3 sm:space-y-4">
-              <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-slate-400 ml-2">End Date</Label>
+              <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-purin-light-brown/60 ml-2">End Date</Label>
               <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-black kawaii-input h-14 sm:h-16"
-                  >
-                    <CalendarIcon className="mr-3 h-4 w-4 sm:h-5 sm:w-5 text-purin-yellow" />
-                    {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
+                <PopoverTrigger
+                  render={(props) => (
+                    <Button
+                      {...props}
+                      variant="outline"
+                      className="w-full justify-start text-left font-black kawaii-input h-14 sm:h-16"
+                    >
+                      <CalendarIcon className="mr-3 h-4 w-4 sm:h-5 sm:w-5 text-purin-yellow" />
+                      {endDate ? format(endDate, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  )}
+                />
                 <PopoverContent className="w-auto p-0 rounded-[2rem] border-4 border-[#FEE440] shadow-2xl">
                   <Calendar
                     mode="single"
@@ -153,7 +176,7 @@ export function LogForm({ onAddLog }: LogFormProps) {
 
         <div className="grid grid-cols-2 gap-6 sm:gap-10">
           <div className="space-y-3 sm:space-y-4">
-            <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-slate-400 ml-2 flex items-center gap-2">
+            <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-purin-light-brown/60 ml-2 flex items-center gap-2">
               <Clock className="w-3 h-3 sm:w-4 sm:h-4" /> Start
             </Label>
             <Input
@@ -164,7 +187,7 @@ export function LogForm({ onAddLog }: LogFormProps) {
             />
           </div>
           <div className="space-y-3 sm:space-y-4">
-            <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-slate-400 ml-2 flex items-center gap-2">
+            <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-purin-light-brown/60 ml-2 flex items-center gap-2">
               <Clock className="w-3 h-3 sm:w-4 sm:h-4" /> End
             </Label>
             <Input
@@ -177,11 +200,11 @@ export function LogForm({ onAddLog }: LogFormProps) {
         </div>
 
         <div className="space-y-3 sm:space-y-4">
-          <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-slate-400 ml-2">
-            Activity <span className="text-slate-300 font-bold">(Optional)</span>
+          <Label className="text-[10px] sm:text-sm font-black uppercase tracking-widest text-purin-light-brown/60 ml-2">
+            Activity <span className="text-purin-light-brown/30 font-bold">(Optional)</span>
           </Label>
           <Input
-            placeholder="Tell me all about it! ☁️"
+            placeholder="Tell me all about it! 🍮"
             value={task}
             onChange={(e) => setTask(e.target.value)}
             className="kawaii-input h-14 sm:h-16"

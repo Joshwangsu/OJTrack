@@ -32,6 +32,20 @@
         "updatedAt": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "userName", "companyName", "targetHours"]
+    },
+    "WeeklyJournal": {
+      "title": "WeeklyJournal",
+      "description": "A weekly reflection journal entry",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "weekStartDate": { "type": "string", "format": "date-time" },
+        "weekEndDate": { "type": "string", "format": "date-time" },
+        "reflection": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "weekStartDate", "weekEndDate", "reflection", "createdAt"]
     }
   },
   "firestore": {
@@ -42,6 +56,10 @@
     "/users/{userId}/settings/current": {
       "schema": "Settings",
       "description": "User's application settings"
+    },
+    "/users/{userId}/journals/{journalId}": {
+      "schema": "WeeklyJournal",
+      "description": "User's weekly journals"
     }
   }
 }
